@@ -69,7 +69,7 @@ public class App extends GameFunctions
     		return; //bad input
     	}
     	
-    	for (int i=0; i<number; i++) {
+    	for (int i=0; i</*  ?  */; i++) {
     		//                  symbol   color 
     		placePrize(screen, DIAMOND, YELLOW);
     	}
