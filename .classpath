@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="mazegame1/src/main/java"/>
+	<classpathentry kind="src" path="mazegame1/src/test/java"/>
+	<classpathentry kind="lib" path="/home/maria/.m2/repository/com/googlecode/lanterna/lanterna/3.0.1/lanterna-3.0.1.jar" sourcepath="/home/maria/.m2/repository/com/googlecode/lanterna/lanterna/3.0.1/lanterna-3.0.1-sources.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="maven.groupId" value="com.googlecode.lanterna"/>
+			<attribute name="maven.artifactId" value="lanterna"/>
+			<attribute name="maven.version" value="3.0.1"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="mazegame1/target/classes"/>
+</classpath>
