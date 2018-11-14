@@ -17,6 +17,10 @@ public class GameFunctions extends Constants {
 	private static ArrayList<TerminalPosition> prizeList = new ArrayList<TerminalPosition>();
 	private static Random randGen = new Random();
 	private static int score = 0;
+	private static char wallCharacterSetting;
+	private static TextColor pathColorSetting;
+	private static TextColor cursorColorSetting;
+	private static TextColor prizeColorSetting;
 	
 	public static ArrayList<TerminalPosition> getPathList() {
 		return pathList;
@@ -29,7 +33,7 @@ public class GameFunctions extends Constants {
 	}
 	
 	//lets the user move the cursor, but only along the path.
-	public static void move(TextGraphics textGraphic, Screen screen) throws IOException {
+	public static void move(TextGraphics textGraphic, Screen screen, String endMessage) throws IOException {
     	KeyStroke input = screen.readInput();
 
     	int rightBound = screen.getTerminalSize().getColumns();
@@ -38,15 +42,19 @@ public class GameFunctions extends Constants {
         
         while(input.getKeyType() != KeyType.Escape) {
     		if (input.getKeyType().equals(KeyType.ArrowUp) && screen.getCursorPosition().getRow()!=0 && !hitWall(UP, screen)) {
+    			screen.setCharacter(screen.getCursorPosition(), new TextCharacter(' ', cursorColorSetting, pathColorSetting));
     			screen.setCursorPosition(screen.getCursorPosition().withRelativeRow(-1));
     		}
     		else if (input.getKeyType().equals(KeyType.ArrowRight) && screen.getCursorPosition().getColumn()!=rightBound && !hitWall(RIGHT, screen)) {
+    			screen.setCharacter(screen.getCursorPosition(), new TextCharacter(' ', cursorColorSetting, pathColorSetting));
     			screen.setCursorPosition(screen.getCursorPosition().withRelativeColumn(1));
     		}
     		else if (input.getKeyType().equals(KeyType.ArrowDown) && screen.getCursorPosition().getRow()!=bottomBound && !hitWall(DOWN, screen)) {
+    			screen.setCharacter(screen.getCursorPosition(), new TextCharacter(' ', cursorColorSetting, pathColorSetting));
     			screen.setCursorPosition(screen.getCursorPosition().withRelativeRow(1));
     		}
     		else if (input.getKeyType().equals(KeyType.ArrowLeft) && screen.getCursorPosition().getColumn()!=0 && !hitWall(LEFT, screen)) {
+    			screen.setCharacter(screen.getCursorPosition(), new TextCharacter(' ', cursorColorSetting, pathColorSetting));
     			screen.setCursorPosition(screen.getCursorPosition().withRelativeColumn(-1));
     		}
     		else {
@@ -59,7 +67,9 @@ public class GameFunctions extends Constants {
     		
     		if (endOfMaze(screen)) {
     			textGraphic.setBackgroundColor(RED);
-    			textGraphic.putString(47, 18, "GAME OVER");
+    			
+    			endMessage = (endMessage.length()>19) ? endMessage.substring(0, 20) : endMessage;
+    			textGraphic.putString(42, 18, endMessage);
     			
     			screen.refresh();
     			break;
@@ -72,19 +82,19 @@ public class GameFunctions extends Constants {
     
     public static boolean hitWall(int dir, Screen screen) {
     	if (dir==UP) {	
-    		return screen.getFrontCharacter(screen.getCursorPosition().withRelativeRow(-1)).getCharacter()==WALL ||
+    		return screen.getFrontCharacter(screen.getCursorPosition().withRelativeRow(-1)).getCharacter()==wallCharacterSetting ||
     				screen.getFrontCharacter(screen.getCursorPosition().withRelativeRow(-1)).getCharacter()==BORDER_HORIZONTAL;
     	}
     	else if (dir==RIGHT) {
-    		return screen.getFrontCharacter(screen.getCursorPosition().withRelativeColumn(1)).getCharacter()==WALL ||
+    		return screen.getFrontCharacter(screen.getCursorPosition().withRelativeColumn(1)).getCharacter()==wallCharacterSetting ||
     				screen.getFrontCharacter(screen.getCursorPosition().withRelativeColumn(1)).getCharacter()==BORDER_VERTICAL;
     	}
     	else if (dir==DOWN) {
-    		return screen.getFrontCharacter(screen.getCursorPosition().withRelativeRow(1)).getCharacter()==WALL  ||
+    		return screen.getFrontCharacter(screen.getCursorPosition().withRelativeRow(1)).getCharacter()==wallCharacterSetting ||
     				screen.getFrontCharacter(screen.getCursorPosition().withRelativeRow(1)).getCharacter()==BORDER_HORIZONTAL;
     	}
     	else if (dir==LEFT) {
-    		return screen.getFrontCharacter(screen.getCursorPosition().withRelativeColumn(-1)).getCharacter()==WALL  ||
+    		return screen.getFrontCharacter(screen.getCursorPosition().withRelativeColumn(-1)).getCharacter()==wallCharacterSetting ||
     				screen.getFrontCharacter(screen.getCursorPosition().withRelativeColumn(-1)).getCharacter()==BORDER_VERTICAL;
     	}
     	else {
@@ -152,7 +162,9 @@ public class GameFunctions extends Constants {
     public static void placePrize(Screen screen, char prize, TextColor color) {
     	int position = randGen.nextInt(pathList.size());
 		
-		screen.setCharacter(pathList.get(position), new TextCharacter(prize, color, BLACK));
+    	prizeColorSetting = color;
+    	
+		screen.setCharacter(pathList.get(position), new TextCharacter(prize, color, pathColorSetting));
 		prizeList.add(pathList.get(position));
     }
 
@@ -160,7 +172,7 @@ public class GameFunctions extends Constants {
     	if (prizeList.contains(screen.getCursorPosition())) {
     		score++;
         	prizeList.remove(prizeList.indexOf(screen.getCursorPosition()));
-        	screen.setCharacter(screen.getCursorPosition(), new TextCharacter(' ', GREEN, BLACK));
+        	screen.setCharacter(screen.getCursorPosition(), new TextCharacter(' ', prizeColorSetting, pathColorSetting));
         	
         	textGraphic.setBackgroundColor(CYAN);
     		textGraphic.setForegroundColor(BLACK);
@@ -171,19 +183,24 @@ public class GameFunctions extends Constants {
     }
     
     //prints the maze using the 2D array in MazeGrid
-    public static void createMaze(Screen screen, TextColor cursorColor, TextColor wallColor, char wallSymbol) {
+    public static void createMaze(Screen screen, TextColor cursorColor, TextColor wallColor, TextColor pathColor, char wallSymbol) {
         char mazeGrid[][] = MazeGrid.getGrid();
+        
+        wallCharacterSetting = wallSymbol;
+        pathColorSetting = pathColor;
+        cursorColorSetting = cursorColor;
         
         for (int i=0; i<20; i++) {
         	for (int j=0; j<40; j++) {
         		TextColor fg = (mazeGrid[i][j]=='X') ? wallColor : cursorColor;
+        		TextColor bg = (mazeGrid[i][j]=='X') ? BLACK : pathColor;
         		char symbol = (mazeGrid[i][j]=='X') ? wallSymbol : ' ';
         		
         		if (mazeGrid[i][j]=='O') {
         			pathList.add(new TerminalPosition(j+1,i+1));
         		}
         		
-        		screen.setCharacter(j+1, i+1, new TextCharacter(symbol, fg, BLACK));
+        		screen.setCharacter(j+1, i+1, new TextCharacter(symbol, fg, bg));
         	}
         }
     }

@@ -3,7 +3,7 @@ package com.mljes.mazegame.mazegame1;
 import com.googlecode.lanterna.TextColor;
 
 public class Constants {	
-	//objects that make up the maze
+	//objects that make up the maze (default)
 	static final char WALL = (char)(0x2593);
 	static final char PRIZE = (char)(0x2665);
 	
@@ -14,6 +14,10 @@ public class Constants {
 	static final char CIRCLE = (char)(0x25CB);
 	static final char SQUARE = (char)(0x225A0);
 	static final char DIAMOND = (char)(0x2666);
+	static final char WALL_SOLID = (char)(0x2588);
+	static final char WALL_DENSE = (char)(0x2593);
+	static final char WALL_MEDIUM = (char)(0x2592);
+	static final char WALL_SPARSE = (char)(0x2591);
 	
 	//objects that make up the border around the maze and info box
 	static final char BORDER_HORIZONTAL = (char)(0x2550);

@@ -40,11 +40,12 @@ public class App extends GameFunctions
     	//The color options are in the Constants.java file
         drawBorders(textGraphic, screen, MAGENTA);
         
-        //                   1      2     3
-        createMaze(screen, GREEN, WHITE, WALL);
+        //                   1      2    3        4
+        createMaze(screen, BLUE, RED, BLACK, WALL_DENSE);
         /* 1 = cursorColor,
          * 2 = wallColor,
-         * 3 = wallSymbol
+         * 3 = pathColor,
+         * 4 = wallSymbol
          */
         
         //Put the number of prizes in here!
@@ -52,7 +53,10 @@ public class App extends GameFunctions
         
         //tell us where we are, let us move around
         updatePositionIndicators(textGraphic, screen);
-        move(textGraphic, screen);
+        
+        //let the user move the cursor around the maze
+        //We can set the "GAME OVER" message to any string of up to 20 characters
+        move(textGraphic, screen, "     GAME OVER     ");
         
         //wait for user to close the screen
         waitForExit(screen);
@@ -70,8 +74,8 @@ public class App extends GameFunctions
     	}
     	
     	for (int i=0; i<number; i++) {
-    		//                  symbol   color 
-    		placePrize(screen, DIAMOND, YELLOW);
+    		//                 symbol  color 
+    		placePrize(screen, HEART, MAGENTA);
     	}
     }
     
