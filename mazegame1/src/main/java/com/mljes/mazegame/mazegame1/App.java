@@ -2,9 +2,7 @@ package com.mljes.mazegame.mazegame1;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-
 import javax.swing.WindowConstants;
-
 import com.googlecode.lanterna.*;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
@@ -38,10 +36,10 @@ public class App extends GameFunctions
     	
     	//You can change the color of the border from MAGENTA
     	//The color options are in the Constants.java file
-        drawBorders(textGraphic, screen, MAGENTA);
+        drawBorders(textGraphic, screen, BLUE);
         
-        //                   1      2    3        4
-        createMaze(screen, BLUE, RED, BLACK, WALL_DENSE);
+        //                   1    2      3        4
+        createMaze(screen, BLUE, WHITE, BLACK, WALL_SPARSE);
         /* 1 = cursorColor,
          * 2 = wallColor,
          * 3 = pathColor,
@@ -49,7 +47,7 @@ public class App extends GameFunctions
          */
         
         //Put the number of prizes in here!
-        placePrizes(10, screen);
+        placePrizes(30, screen);
         
         //tell us where we are, let us move around
         updatePositionIndicators(textGraphic, screen);

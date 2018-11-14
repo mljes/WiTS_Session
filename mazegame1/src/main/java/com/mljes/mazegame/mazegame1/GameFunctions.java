@@ -22,6 +22,7 @@ public class GameFunctions extends Constants {
 	private static TextColor cursorColorSetting;
 	private static TextColor prizeColorSetting;
 	
+	//get methods for arraylists and score
 	public static ArrayList<TerminalPosition> getPathList() {
 		return pathList;
 	}
@@ -36,10 +37,11 @@ public class GameFunctions extends Constants {
 	public static void move(TextGraphics textGraphic, Screen screen, String endMessage) throws IOException {
     	KeyStroke input = screen.readInput();
 
+    	//right edge and bottom edge
     	int rightBound = screen.getTerminalSize().getColumns();
     	int bottomBound = screen.getTerminalSize().getRows();
     	
-        
+        //repeatedly check key buffer and act on arrow key presses
         while(input.getKeyType() != KeyType.Escape) {
     		if (input.getKeyType().equals(KeyType.ArrowUp) && screen.getCursorPosition().getRow()!=0 && !hitWall(UP, screen)) {
     			screen.setCharacter(screen.getCursorPosition(), new TextCharacter(' ', cursorColorSetting, pathColorSetting));
@@ -58,13 +60,14 @@ public class GameFunctions extends Constants {
     			screen.setCursorPosition(screen.getCursorPosition().withRelativeColumn(-1));
     		}
     		else {
-    			
+    			//look, Ma, no code....
     		}
         	
     		updatePositionIndicators(textGraphic, screen);
     		
     		collectPrize(screen, textGraphic);
     		
+    		//disable keyboard buffer checking and show end-of-game message
     		if (endOfMaze(screen)) {
     			textGraphic.setBackgroundColor(RED);
     			
@@ -75,11 +78,13 @@ public class GameFunctions extends Constants {
     			break;
     		}
     		
+    		//apply any changes to screen
             screen.refresh();
             input = screen.readInput();
         }
     }
     
+	//prevents cursor from walking through walls
     public static boolean hitWall(int dir, Screen screen) {
     	if (dir==UP) {	
     		return screen.getFrontCharacter(screen.getCursorPosition().withRelativeRow(-1)).getCharacter()==wallCharacterSetting ||
@@ -98,10 +103,11 @@ public class GameFunctions extends Constants {
     				screen.getFrontCharacter(screen.getCursorPosition().withRelativeColumn(-1)).getCharacter()==BORDER_VERTICAL;
     	}
     	else {
-    		return true; //block it
+    		return true; //block it entirely
     	}
     }
     
+    //update xpos and ypos indicators on info pane
     public static void updatePositionIndicators(TextGraphics textGraphic, Screen screen) throws IOException {
 		int xPos = screen.getCursorPosition().getColumn();
 		int yPos = screen.getCursorPosition().getRow();
@@ -121,6 +127,7 @@ public class GameFunctions extends Constants {
 		textGraphic.setForegroundColor(WHITE);
     }
     
+    //check if cursor is at the end of the maze
     public static boolean endOfMaze(Screen screen) {
     	return screen.getCursorPosition().equals(new TerminalPosition(40,19)); 
     }
@@ -159,6 +166,7 @@ public class GameFunctions extends Constants {
         screen.refresh();
     }
     
+    //put a prize onto a random path position
     public static void placePrize(Screen screen, char prize, TextColor color) {
     	int position = randGen.nextInt(pathList.size());
 		
@@ -168,6 +176,7 @@ public class GameFunctions extends Constants {
 		prizeList.add(pathList.get(position));
     }
 
+    //remove prize from board and increment score when cursor passes prize
     public static void collectPrize(Screen screen, TextGraphics textGraphic) {
     	if (prizeList.contains(screen.getCursorPosition())) {
     		score++;
@@ -210,6 +219,4 @@ public class GameFunctions extends Constants {
         KeyStroke input = screen.readInput();
         while (input.getKeyType() != KeyType.Escape) { input = screen.readInput(); }
     }
-   
-    
 }
